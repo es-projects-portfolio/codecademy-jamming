@@ -1,23 +1,45 @@
-import logo from './logo.svg';
+import React, { useCallback, useState } from 'react';
+import Playlist from '../Playlist/Playlist';
 import './App.css';
 
-function App() {
+const App = () => {
+  const [playlistName, setPlaylistName] = useState('New Playlist');
+  const [playlistTracks, setPlaylistTracks] = useState([]);
+
+  const addTrack = useCallback((track) => {
+    if (playlistTracks.some((savedTrack) => savedTrack.id === track.id))
+      return;
+
+    setPlaylistTracks((prevTracks) => [...prevTracks, track]);
+  }, [playlistTracks]);
+
+  const removeTrack = useCallback((track) => {
+    setPlaylistTracks((prevTracks) =>
+    prevTracks.filter((currentTrack) => currentTrack.id !== track.id));
+  }, []);
+
+  const updatePlaylistName = useCallback((name) => {
+    setPlaylistName(name);
+  }, []);
+
+  const savePlaylist = useCallback(() => {
+    const trackUris = playlistTracks.map((track) => track.uri);
+
+  }, []);
+
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div>
+        <Playlist
+          playlistName={playlistName}
+          playlistTracks={playlistTracks}
+          onNameChange={updatePlaylistName}
+          onRemove={removeTrack}
+          onSave={savePlaylist}
+        />
+      </div>
     </div>
   );
 }
